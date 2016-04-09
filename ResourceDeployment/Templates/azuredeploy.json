@@ -1,0 +1,84 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubName": {
+      "type": "string"
+    },
+    "datalakeStoreName": {
+      "type": "string"
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "queueName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-02-03",
+      "type": "Microsoft.Devices/IotHubs",
+      "name": "[parameters('hubName')]",
+      "location": "East US",
+      "sku": {
+        "name": "F1",
+        "tier": "Free",
+        "capacity": 1
+      },
+      "properties": {
+        "location": "East US"
+      }
+    },
+    {
+      "apiVersion": "2016-02-03",
+      "type": "Microsoft.Devices/IotHubs/eventhubEndpoints/ConsumerGroups",
+      "name": "[concat(parameters('hubName'), '/events/cg1')]",
+      "dependsOn": [
+        "[concat('Microsoft.Devices/Iothubs/', parameters('hubName'))]"
+      ]
+    },
+    {
+      "apiVersion": "2016-02-03",
+      "type": "Microsoft.Devices/IotHubs/eventhubEndpoints/ConsumerGroups",
+      "name": "[concat(parameters('hubName'), '/events/cg2')]",
+      "dependsOn": [
+        "[concat('Microsoft.Devices/Iothubs/', parameters('hubName'))]"
+      ]
+    },
+    {
+      "apiVersion": "2015-10-01-preview",
+      "type": "Microsoft.DataLakeStore/accounts",
+      "name": "[parameters('datalakeStoreName')]",
+      "location": "eastus2"
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('namespace')]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "location": "East US",
+      "properties": {
+        "messagingSku": "1",
+        "enabled": true,
+        "status": "Active"
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "[parameters('queueName')]",
+          "type": "Queues",
+          "dependsOn": [
+            "[concat('Microsoft.ServiceBus/namespaces/', parameters('namespace'))]"
+          ],
+          "properties": {
+            "path": "[parameters('queueName')]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}
