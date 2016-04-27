@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace ReadDeviceToCloudMessages
 {
+    using System.Configuration;
+
     using Microsoft.ServiceBus.Messaging;
 
     class Program
     {
-        static string connectionString = "{iothub connection string}";
+        static string connectionString = ConfigurationManager.AppSettings["IoTHubConnectionString"];
         static string iotHubD2cEndpoint = "messages/events";
         static EventHubClient eventHubClient;
 

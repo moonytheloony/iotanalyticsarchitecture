@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace CreateDeviceIdentity
 {
+    using System.Configuration;
+
     using Microsoft.Azure.Devices;
     using Microsoft.Azure.Devices.Common.Exceptions;
 
     class Program
     {
         static RegistryManager registryManager;
-        static string connectionString = "{iothub connection string}";
+        static string connectionString = ConfigurationManager.AppSettings["IoTHubConnectionString"];
 
         static void Main(string[] args)
         {
@@ -35,6 +37,7 @@ namespace CreateDeviceIdentity
             }
 
             Console.WriteLine("Generated device key: {0}", device.Authentication.SymmetricKey.PrimaryKey);
+            Console.ReadKey();
         }
     }
 }

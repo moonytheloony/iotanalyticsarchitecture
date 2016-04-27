@@ -49,6 +49,14 @@
       ]
     },
     {
+      "apiVersion": "2016-02-03",
+      "type": "Microsoft.Devices/IotHubs/eventhubEndpoints/ConsumerGroups",
+      "name": "[concat(parameters('hubName'), '/events/cg3')]",
+      "dependsOn": [
+        "[concat('Microsoft.Devices/Iothubs/', parameters('hubName'))]"
+      ]
+    },
+    {
       "apiVersion": "2015-10-01-preview",
       "type": "Microsoft.DataLakeStore/accounts",
       "name": "[parameters('datalakeStoreName')]",
@@ -74,7 +82,39 @@
           ],
           "properties": {
             "path": "[parameters('queueName')]"
-          }
+          },
+          "resources": [
+            {
+              "apiVersion": "2015-08-01",
+              "name": "sendmessage",
+              "type": "AuthorizationRules",
+              "dependsOn": [
+                "[parameters('queueName')]"
+              ],
+              "properties": {
+                "keyName": "sendmessage",
+                "claimType": "SharedAccessKey",
+                "claimValue": "None",
+                "rights": [ "Send" ],
+                "revision": -1
+              }
+            },
+            {
+              "apiVersion": "2015-08-01",
+              "name": "readmessage",
+              "type": "AuthorizationRules",
+              "dependsOn": [
+                "[parameters('queueName')]"
+              ],
+              "properties": {
+                "keyName": "readmessage",
+                "claimType": "SharedAccessKey",
+                "claimValue": "None",
+                "rights": [ "Listen" ],
+                "revision": -1
+              }
+            }
+          ]
         }
       ]
     }

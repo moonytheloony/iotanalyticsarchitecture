@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs;
 
 namespace SimulatedDevice
 {
+    using System.Configuration;
     using System.Threading;
 
     using Microsoft.Azure.Devices.Client;
@@ -17,8 +18,8 @@ namespace SimulatedDevice
     class Program
     {
         static DeviceClient deviceClient;
-        static string iotHubUri = "{iot hub hostname}";
-        static string deviceKey = "{device key}";
+        static string iotHubUri = ConfigurationManager.AppSettings["IoTHubUri"];
+        static string deviceKey = ConfigurationManager.AppSettings["DeviceKey"];
 
         static void Main()
         {
@@ -31,7 +32,7 @@ namespace SimulatedDevice
 
         private static async void SendDeviceToCloudMessagesAsync()
         {
-            double avgWindSpeed = 10; // m/s
+            double avgWindSpeed = 20; // m/s
             Random rand = new Random();
 
             while (true)
